@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
@@ -60,13 +61,21 @@ def pca(data_set, n_components):
             count = count+1
             total = total + data_set[x][i]
         avg.append(total/count)
+
     
     for y in range(len(data_set)):
-        data_set[y] = data_set[y] - avg[y]
+        for z in range(len(data_set[0])):
+            data_set[y][z] = data_set[y][z] - avg[z]
+    
+    covar = np.cov(data_set, rowvar = False)
 
-    covar = np.cov(data_set)
-    evs = numpy.linalg.eig(covar)
-    return dim_reduction(data_set, evs)
+    evals = []
+    evecs = []
+    evecs_sorted = []
+    evals, evecs = np.linalg.eig(covar)
+    evecs_sorted = evecs[evals.argsort(), :]
+    evs = evecs_sorted[:, range(n_components)]
+    return evs
     
 
     
@@ -95,5 +104,13 @@ def dim_reduction(data_set, components):
 
 
 # You may put code here to test your program. They will not be run during grading.
+def main():
+    data = []
+    data = read_data('pizza.txt')
+    comp = pca(data, 2)
+    result = dim_reduction(data, comp)
+    plt.plot(result[:,0], result[:,1])
+    plt.savefig('plot.png')
+
 if __name__ == '__main__':
-    pass
+    main()
