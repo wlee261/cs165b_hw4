@@ -73,7 +73,7 @@ def pca(data_set, n_components):
     evecs = []
     evecs_sorted = []
     evals, evecs = np.linalg.eig(covar)
-    evecs_sorted = evecs[evals.argsort(), :]
+    evecs_sorted = evecs[:, evals.argsort()]
     evs = evecs_sorted[:, range(n_components)]
     return evs
     
@@ -109,7 +109,7 @@ def main():
     data = read_data('pizza.txt')
     comp = pca(data, 2)
     result = dim_reduction(data, comp)
-    plt.plot(result[:,0], result[:,1])
+    plt.scatter(result[:,0], result[:,1])
     plt.savefig('plot.png')
 
 if __name__ == '__main__':
