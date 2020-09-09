@@ -74,7 +74,10 @@ def pca(data_set, n_components):
     evecs_sorted = []
     evals, evecs = np.linalg.eig(covar)
     evecs_sorted = evecs[:, evals.argsort()]
-    evs = evecs_sorted[:, range(n_components)]
+    for a in range(n_components):
+        evs.append(evecs_sorted[:, len(evecs_sorted[:,1]) - a - 1])
+    evs = np.transpose(evs)
+
     return evs
     
 
